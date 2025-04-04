@@ -1,40 +1,34 @@
 {% extends 'index.html' %}
 {% block title %} {{ course.name }} | eLMS {% endblock title %}
-{% block profile %}
-{% url 'profile' student.student_id %}
-{% endblock %}
-{% block user %}
-{{student.name}}
-{% endblock user %}
-{% block allCourses %}
-{% url 'courses' %}
-{% endblock%}
-{% block courses %}
-{% url 'myCourses' %}
-{% endblock %}
+{% block profile %}{% url 'profile' student.student_id %}{% endblock %}
+{% block user %}{{student.name}}{% endblock user %}
+{% block allCourses %}{% url 'courses' %}{% endblock %}
+{% block courses %}{% url 'myCourses' %}{% endblock %}
 {% block content %}
+
 {% if messages %}
-{% for message in messages %}
-<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-   <span class="fw-bold"> {{ message }}</span>
-   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-md animate-fadeIn text-center">
+    {% for message in messages %}
+        <span class="font-semibold">{{ message }}</span>
+    {% endfor %}
 </div>
-{% endfor %}
+<script>
+    setTimeout(() => document.querySelector('.fixed').remove(), 3000);
+</script>
 {% endif %}
 
-
-<div class="container-fluid d-flex" style="min-height: 70vh;">
-   <div class="row justify-content-center m-3 align-self-center w-100">
-      <div class="col-lg-4 col-sm-12 col-md-6 border p-3 rounded">
-         <form action="" method="post">
+<div class="flex items-center justify-center min-h-[70vh] px-6">
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-md border border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white text-center mb-4">Enter Access Key</h2>
+        <form action="" method="post" class="space-y-4">
             {% csrf_token %}
-            <div class="mb-3">
-               <label for="key" class="form-label">Enter the access key: </label>
-               <input type="number" class="form-control" id="key" name="key" min="0" placeholder="e.g. 1234">
+            <div>
+                <label for="key" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Access Key</label>
+                <input type="number" id="key" name="key" min="0" placeholder="e.g. 1234" class="w-full px-3 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
-            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
-         </form>
-      </div>
-   </div>
+            <button type="submit" class="w-full bg-black text-white py-2 rounded-md font-medium hover:bg-gray-800 transition">Submit</button>
+        </form>
+    </div>
 </div>
+
 {% endblock %}

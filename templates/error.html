@@ -1,32 +1,44 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Error!</title>
-      <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/icon/apple-touch-icon.png' %}">
-      <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/icon/favicon-32x32.png' %}">
-      <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/icon/favicon-16x16.png' %}">
-      <link rel="manifest" href="{% static 'images/icon/site.webmanifest' %}">
-      <link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
-      <link rel="stylesheet" href="{% static 'styles/style.css' %}">
-   </head>
-   <body>
-      <div class="container d-flex justify-content-center align-items-center flex-column" style="min-height: 90vh;">
-         <div>
-            <h2 class="d-inline">oops! an </h2>
-            <h1 class="d-inline fw-bold" style="font-size: 8vw;color:red"> ERROR</h1>
-            <h2 class="d-inline"> occured</h2>
-         </div>
-         <a style="text-decoration: none;" href=" {% url 'std_logout' %} ">Please log in again from here</a>
-         <div>
-            <h2 style="color: rgb(10, 10, 48); font-size: 1rem;">
-               If problem persists try clearing the cookies of you browser and restart
-            </h2>
-         </div>
-      </div>
-      <script src=" {% static 'js/bootstrap.bundle.min.js' %}"></script>
-   </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://static.pw.live/fonts/reddit/font.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4c4c',
+                        secondary: '#3b82f6',
+                        darkBg: '#0f172a',
+                        lightBg: '#f1f5f9'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/icon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/icon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/icon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'images/icon/site.webmanifest' %}">
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-lightBg dark:bg-darkBg text-center px-6">
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 w-96 flex flex-col items-center">
+        <dotlottie-player src="https://lottie.host/27d35519-8b4f-4212-a3dc-e1332660f0d7/1LQab2padn.lottie" background="transparent" speed="1" loop autoplay class="w-[15rem] h-[15rem]"></dotlottie-player>
+        
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mt-4">Oops! Something went wrong</h2>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">An unexpected error occurred. Please try again.</p>
+        
+        <a href="{% url 'std_logout' %}" class="mt-4 bg-black text-white px-8 py-2.5 rounded-md text-sm font-medium shadow-md hover:bg-gray-800 transition">Log in Again</a>
+        
+        <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">If the issue persists, clear your browser cookies and restart.</p>
+    </div>
+    
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+</body>
 </html>

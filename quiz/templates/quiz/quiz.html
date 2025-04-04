@@ -13,89 +13,62 @@
 {% url 'courses' %}
 {% endblock %} 
 {% block content %}
-<div class="container" id="con">
-   <!-- navigation links -->
-   <div class="container shadow-sm">
-      <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-         <ol class="breadcrumb p-3">
-            <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)" href="{% url 'facultyCourses' %}">My
-               Courses</a>
-            </li>
-            <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)"
-               href="{% url 'faculty' course.code %}">{{ course.name }}</a></li>
-            <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)"
-               href="{% url 'allQuizzes' course.code %}">All quizzes</a></li>
-            <li class="breadcrumb-item active animate__animated animate__backInRight" aria-current="page">Create Quiz</li>
+<div class="mt-6 px-6">
+   <!-- Navigation Links -->
+   <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 flex justify-between items-center">
+      <nav class="text-gray-500 dark:text-gray-300" aria-label="breadcrumb">
+         <ol class="flex space-x-2 text-sm">
+            <li><a href="{% url 'facultyCourses' %}" class="text-blue-600 dark:text-blue-400 font-semibold">My Courses</a></li>
+            <li><a href="{% url 'faculty' course.code %}" class="text-gray-700 dark:text-white font-semibold">/ {{ course.name }}</a></li>
+            <li><a href="{% url 'allQuizzes' course.code %}" class="text-gray-700 dark:text-white font-semibold">/ All Quizzes</a></li>
+            <li class="text-gray-700 dark:text-white font-semibold">/ Create Quiz</li>
          </ol>
       </nav>
    </div>
-   <!-- navigation links end -->
-</div>
-<div class="container d-flex justify-content-center mt-3" id="form">
-   <div class="border shadow-sm border-light rounded pb-4 px-3 col-lg-8 col-sm-12 mt-3">
-      <span class="fw-bold fs-5 d-flex justify-content-center my-3">
-      Create Quiz
-      </span>
-      <form action="{% url 'quiz' course.code %}" method="POST">
+   
+   <!-- Create Quiz Form -->
+   <div class="max-w-3xl mx-auto mt-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-center text-gray-900 dark:text-white mb-4">Create Quiz</h2>
+      <form action="{% url 'quiz' course.code %}" method="POST" class="space-y-4">
          {% csrf_token %}
-         <div class="mb-3 mt-3 fw-bold">
-            <label for="title" class="form-label">Quiz Title</label>
-            <input type="text" class="form-control" id="title" name='title' required>
+         <div>
+            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Quiz Title</label>
+            <input type="text" id="title" name="title" required class="mt-1 p-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
          </div>
-         <div class="mb-3 fw-bold">
-            <label for="Instructions" class="form-label">Instructions</label>
-            <textarea class="form-control" id="Instructions" name="description"></textarea>
+         <div>
+            <label for="Instructions" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Instructions</label>
+            <textarea id="Instructions" name="description" class="mt-1 p-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
          </div>
-         <div class="mb-3 fw-bold">
-            <label for="start" class="form-label">Start</label>
-            <input type="datetime-local" class="form-control" id="start" name="start" required>
+         <div>
+            <label for="start" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Start</label>
+            <input type="datetime-local" id="start" name="start" required class="mt-1 p-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
          </div>
-         <div class="mb-3 fw-bold">
-            <label for="end" class="form-label">End</label>
-            <input type="datetime-local" class="form-control" id="end" name="end" required>
+         <div>
+            <label for="end" class="block text-sm font-medium text-gray-700 dark:text-gray-300">End</label>
+            <input type="datetime-local" id="end" name="end" required class="mt-1 p-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
          </div>
-         <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" value="" id="checkbox" name="checkbox">
-            <label class="form-check-label" for="checkbox">
-            Publish grade after submission
-            </label>
+         <div class="flex items-center">
+            <input type="checkbox" id="checkbox" name="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
+            <label for="checkbox" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Publish grade after submission</label>
          </div>
-         <div class="d-flex justify-content-end p-2 border" style="background-color: rgb(250,250,250);">
-            <button type="submit" class="btn btn-sm btn-primary mx-2">Proceed</button>
-            <a href="{% url 'allQuizzes' course.code %}" type="button" class="btn btn-sm btn-danger">Discard</a>
+         <div class="flex justify-end space-x-3 pt-4 border-t dark:border-gray-600">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">Proceed</button>
+            <a href="{% url 'allQuizzes' course.code %}" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">Discard</a>
          </div>
       </form>
    </div>
 </div>
 <script>
-   //change value of checkbox if checked
-   $('#checkbox').change(function() {
-       if ($(this).is(":checked")) {
-           $('#checkbox').val("True");
-       } else {
-           $('#checkbox').val("False");
-       }
+   document.getElementById('checkbox').addEventListener('change', function() {
+       this.value = this.checked ? "True" : "False";
    });
-   // check if end date is after start date
-   $('#form').on('submit', function(e) {
-       var start = $('#start').val();
-       var end = $('#end').val();
+   document.getElementById('form').addEventListener('submit', function(e) {
+       var start = document.getElementById('start').value;
+       var end = document.getElementById('end').value;
        if (start > end) {
            e.preventDefault();
            alert('End date must be after start date');
        }
    });
-   
-   let addQuiz = document.getElementById('form');
-   anime({
-      targets: addQuiz,
-      opacity: [0, 1],
-      easing: 'easeInOutQuad',
-      duration: 1500,
-      delay: function (el, i) {
-         return i * 250;
-      }
-   });
-   
 </script>
 {% endblock %}

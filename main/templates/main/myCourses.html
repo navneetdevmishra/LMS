@@ -13,46 +13,43 @@
 {% url 'myCourses' %}
 {% endblock %}
 {% block content %}
-<div>
-   <!--navigation links-->
-   <div class="container">
-      <div class="container shadow-sm">
-         <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-            <ol class="breadcrumb p-3">
-               <li class="breadcrumb-item active" aria-current="page">My courses</li>
-            </ol>
-         </nav>
-      </div>
-      {% if courses %}
-      <!-- Course container -->
-      <div class="card_primary d-flex justify-content-center flex-wrap">
-         {% for courses in courses %}
-         <!-- individual course starts -->
-         <div class="cd card text-center my-4 mx-4" style="width: 30rem !important;">
-            <div class="card-header text-light fw-bold">
-               Dept. of {{courses.department}}
-            </div>
-            <div class="card-body">
-               <h5 class="card-title fw-bold"> {{courses.department}}-{{courses.code}} : {{courses.name}}</h5>
-               <a href="{% url 'course' courses.code %}" class="btn btn-outline-dark px-5">Enter</a>
-            </div>
-            <div class="card-footer text-light fw-bold">
-               {% if courses.faculty %}
-               Course Teacher : {{ courses.faculty.name}}
-               {% else %}
-               Teacher not assigned yet
-               {% endif %}
-            </div>
-         </div>
-         <!-- individual course ends -->
-         {% endfor %}
-         <!-- Course container ends -->
-      </div>
-      {% else %}
-      <div class="text-center fs-5 text-secondary">
-         <p>You are not enrolled in any courses</p>
-      </div>
-      {% endif %}
+<div class="mt-6 px-6">
+   <!-- Navigation Links -->
+   <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+      <nav class="text-gray-500 dark:text-gray-300" aria-label="breadcrumb">
+         <ol class="flex space-x-2 text-sm">
+            <li class="text-gray-700 dark:text-white font-semibold">My Courses</li>
+         </ol>
+      </nav>
    </div>
+   
+   {% if courses %}
+   <!-- Course Container -->
+   <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-6">
+      {% for courses in courses %}
+      <!-- Individual Course -->
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+         <div class="bg-blue-600 text-white p-4 font-bold">
+            Dept. of {{courses.department}}
+         </div>
+         <div class="p-4">
+            <h5 class="text-lg font-semibold text-gray-900 dark:text-white">{{courses.department}}-{{courses.code}} : {{courses.name}}</h5>
+            <a href="{% url 'course' courses.code %}" class="mt-4 inline-block bg-gray-900 text-white dark:bg-gray-700 dark:text-gray-200 px-5 py-2 rounded-lg">Enter</a>
+         </div>
+         <div class="bg-gray-100 dark:bg-gray-700 p-4 text-gray-700 dark:text-white font-semibold">
+            {% if courses.faculty %}
+            Course Teacher: {{ courses.faculty.name }}
+            {% else %}
+            Teacher not assigned yet
+            {% endif %}
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+   {% else %}
+   <div class="text-center text-gray-500 dark:text-gray-300 text-lg mt-6">
+      <p>You are not enrolled in any courses</p>
+   </div>
+   {% endif %}
 </div>
 {% endblock %}

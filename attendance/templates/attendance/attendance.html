@@ -1,4 +1,5 @@
 {% extends 'index.html' %}
+{% load static %}
 {% block title %}Attendance | {{ course.name }} {% endblock title %}
 {% block profile %}
 {% url 'profile' faculty.faculty_id %}
@@ -13,119 +14,94 @@
 {% url 'courses' %}
 {% endblock %} 
 {% block content %}
-{% comment %} alert {% endcomment %}
-{% if messages %}
-{% for message in messages %}
-<div class="text-center alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-   <span class="fw-bold"> {{ message }}</span>
-   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-{% if error %}
-<div class="text-center alert alert-danger alert-dismissible fade show" role="alert">
-   <span class="fw-bold"> {{ error }}</span>
-   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endif %}
-{% comment %} alert ends {% endcomment %}
-
-<div class="container" id="con">
-   <!-- navigation links -->
-   <div class="container shadow-sm">
-      <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-         <ol class="breadcrumb p-3">
-            <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)" href="{% url 'facultyCourses' %}">My
-               Courses</a>
-            </li>
-            <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)"
-               href="{% url 'faculty' course.code %}">{{ course.name }}</a></li>
-            <li class="breadcrumb-item active animate__animated animate__backInRight" aria-current="page">Attendance</li>
+<div class="mt-6 px-6">
+   <!-- Navigation Links -->
+   <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 flex justify-between items-center">
+      <nav class="text-gray-500 dark:text-gray-300" aria-label="breadcrumb">
+         <ol class="flex space-x-2 text-sm">
+            <li><a href="{% url 'facultyCourses' %}" class="text-blue-600 dark:text-blue-400 font-semibold">My Courses</a></li>
+            <li><a href="{% url 'faculty' course.code %}" class="text-gray-700 dark:text-white font-semibold">/ {{ course.name }}</a></li>
+            <li class="text-gray-700 dark:text-white font-semibold">/ Attendance</li>
          </ol>
       </nav>
    </div>
-   <!-- navigation links end -->
-</div>
-<div class="container">
-   <div class="d-flex rounded flex-row p-2 border justify-content-end" style="background-color:rgb(250,250,250)">
-      <div>
-         <form method="POST" action="{% url 'createRecord' course.code %}">
+   
+   <!-- Alert Messages -->
+   {% if messages or error %}
+   <div class="mt-4">
+      {% for message in messages %}
+      <div class="text-center bg-{{message.tags}}-100 text-{{message.tags}}-800 p-3 rounded shadow-md">{{ message }}</div>
+      {% endfor %}
+      {% if error %}
+      <div class="text-center bg-red-100 text-red-800 p-3 rounded shadow-md">{{ error }}</div>
+      {% endif %}
+   </div>
+   {% endif %}
+   
+   <!-- Attendance Actions -->
+   <div class="max-w-4xl mx-auto mt-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+      <div class="flex justify-between items-center">
+         <form method="POST" action="{% url 'createRecord' course.code %}" class="flex space-x-2">
             {% csrf_token %} 
-            <input name="dateCreate" type="date" class="border border-secondary px-2" required>
-            <button type="submit" class="btn btn-sm btn-primary mx-1 px-3">
-            Create Attendance Record
-            </button>
+            <input name="dateCreate" type="date" class="border p-2 rounded dark:bg-gray-700 dark:text-white" required>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Create Record</button>
+         </form>
+         <form action="{% url 'loadAttendance' course.code %}" method="post" class="flex space-x-2">
+            {% csrf_token %}
+            <input type="date" name="date" required class="border p-2 rounded dark:bg-gray-700 dark:text-white">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Load</button>
          </form>
       </div>
    </div>
-   <p>
-      {% if attendace %}
-      Attendance entry for {{date}}
-      {% endif %}
-   </p>
-   <div>
-      <form action="{% url 'loadAttendance' course.code %}"  method="post">
-         {% csrf_token %}
-         <input type="date" name="date" required>
-         <button type="submit" class="btn btn-sm btn-success">Load</button>
+   
+   <!-- Attendance Table -->
+   <div class="overflow-x-auto mt-6">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border rounded-lg">
+         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+               <th class="px-6 py-3">Student</th>
+               <th class="px-6 py-3">ID</th>
+               <th class="px-6 py-3">Total Absence</th>
+               <th class="px-6 py-3">Total Present</th>
+               <th class="px-6 py-3">Attendance</th>
+            </tr>
+         </thead>
+         <tbody>
+            <form action="{% url 'submitAttendance' course.code %}" method="post">
+               {% csrf_token %}
+               {% for attendance in attendance %}
+               <tr class="border-b dark:border-gray-700">
+                  <td class="px-6 py-4 flex items-center">
+                     <img class="w-10 h-10 rounded-full mr-3" src="/media/{{ attendance.student.photo }}" alt="">
+                     {{ attendance.student.name }}
+                  </td>
+                  <td class="px-6 py-4">{{ attendance.student.student_id }}</td>
+                  <td class="px-6 py-4">{{ attendance.total_absent }}</td>
+                  <td class="px-6 py-4">{{ attendance.total_present }}</td>
+                  <td class="px-6 py-4 flex space-x-4">
+                     <label class="flex items-center">
+                     <input class="form-radio" type="radio" name="{{ attendance.student.student_id }}" value="1">
+                     <span class="ml-2">Present</span>
+                     </label>
+                     <label class="flex items-center">
+                     <input class="form-radio" type="radio" name="{{ attendance.student.student_id }}" value="0">
+                     <span class="ml-2">Absent</span>
+                     </label>
+                  </td>
+               </tr>
+               {% endfor %}
+               <tr>
+                  <input type="hidden" name="datehidden" value="{{ date }}" required>
+               </tr>
+         </tbody>
+      </table>
+   </div>
+   
+   <!-- Save & Discard Buttons -->
+   <div class="flex justify-end mt-4">
+      <a href="{% url 'faculty' course.code %}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Discard</a>
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">Save</button>
       </form>
    </div>
-   <div class="table-responsive-sm">
-   <table class="table my-3 text-center">
-      <thead class="table-dark">
-         <tr>
-            <th scope="col" colspan="2">Student</th>
-            <th scope="col">ID</th>
-            <th scope="col">Total Absence</th>
-            <th scope="col">Total Present</th>
-            <th scope="col" colspan="2">Attendance</th>
-         </tr>
-      </thead>
-      <tbody class="table-group-divider">
-         <form action="{% url 'submitAttendance' course.code %}"  method="post">
-            {% csrf_token %}
-            {% for attendance in attendance %}
-            <tr class="text-center">
-               <td><img class="align-self-baseline rounded-circle" src="/media/{{ attendance.student.photo}}" alt="image"
-                  style="height: 4rem;width:4rem;"></td>
-               <td>{{attendance.student.name}}</td>
-               <td>{{attendance.student.student_id}}</td>
-               <td>{{attendance.total_absent}}</td>
-               <td>{{attendance.total_present}}</td>
-               <td >
-                  <div class="form-check form-check-inline">
-                     <input class="form-check-input" type="radio" name="{{attendance.student.student_id}}" id="inlineRadio1{{forloop.counter}}" value="1">
-                     <label class="form-check-label" for="inlineRadio1{{forloop.counter}}">Present</label>
-                  </div>
-               </td>
-               <td>
-                  <div class="form-check form-check-inline">
-                     <input class="form-check-input" type="radio" name="{{attendance.student.student_id}}" id="inlineRadio2{{forloop.counter}}" value="0">
-                     <label class="form-check-label" for="inlineRadio2{{forloop.counter}}">Absent</label>
-                  </div>
-               </td>
-            </tr>
-            {% endfor %}
-            <tr>
-               <input type="hidden" name="datehidden" value="{{date}}" required>
-            </tr>
-      </tbody>
-   </table>
-   </div>
-   <div class="d-flex flex-row-reverse p-2 border rounded" style="background-color: rgb(250, 250, 250);">
-   <span>
-   </span> 
-   <a href=" {% url 'faculty' course.code %}" class="btn btn-sm btn-danger">Discard</a>
-   <button type="submit" class="btn btn-sm btn-primary px-3 mx-1">Save</button>
-   </form>
-   </div>
 </div>
-
-<script>
-   $(document).ready(function(){
-     setTimeout(function(){
-       $(".alert").alert('close');
-     },4000);
-   });
-</script>
 {% endblock %}

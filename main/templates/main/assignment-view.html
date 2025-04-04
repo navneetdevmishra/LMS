@@ -1,150 +1,97 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block title %} {{ assignment.title }} - eLMS {% endblock title %}
-{% block profile %}
-{% url 'profile' faculty.faculty_id %}
-{% endblock %}
-{% block user %}
-{{faculty.name}}
-{% endblock user %}
-{% block allCourses %}
-{% url 'courses' %}
-{% endblock %}
-{% block courses %}
-{% url 'facultyCourses' %}
-{% endblock courses %}
+{% block profile %}{% url 'profile' faculty.faculty_id %}{% endblock %}
+{% block user %}{{faculty.name}}{% endblock user %}
+{% block allCourses %}{% url 'courses' %}{% endblock %}
+{% block courses %}{% url 'facultyCourses' %}{% endblock courses %}
 {% block content %}
-<!-- navigation links -->
-<div class="container shadow-sm">
-   <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-      <ol class="breadcrumb p-3">
-         <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)" href="{% url 'facultyCourses' %}">My
-            Courses</a>
-         </li>
-         <li class="breadcrumb-item fw-bold"><a style="color: rgb(10, 10, 48)"
-            href="{% url 'faculty' course.code %}">{{ course.name }}</a></li>
-         <li class="breadcrumb-item active animate__animated animate__backInRight" aria-current="page">Assignment <span>
-            ({{ assignment.title }})</span> 
-         </li>
-      </ol>
-   </nav>
+
+<div class="container mx-auto p-6">
+    <nav class="mb-4">
+        <ol class="flex space-x-2 text-gray-500 text-sm">
+            <li><a href="{% url 'facultyCourses' %}" class="text-blue-600 hover:underline">My Courses</a></li>
+            <li><a href="{% url 'faculty' course.code %}" class="text-blue-600 hover:underline">{{ course.name }}</a></li>
+            <li class="text-gray-800 font-semibold">Assignment ({{ assignment.title }})</li>
+        </ol>
+    </nav>
+
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ assignment.title }}</h2>
+        <p class="mt-2 text-gray-700 dark:text-gray-300">{{ assignment.description }}</p>
+        <p class="mt-2 text-red-500 font-medium">Deadline: {{ assignment.due_date }}</p>
+        {% if assignment.file %}
+        <div class="mt-4 flex space-x-3">
+            <a href="{{ assignment.file.url }}" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition">View</a>
+            <a href="{{ assignment.file.url }}" download class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition">Download</a>
+        </div>
+        {% endif %}
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Submitted: {{ assignment.submission_set.count }}/{{ totalStudents }}</p>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Time Remaining: <span id="timeRemain"></span></p>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mt-6">Submissions</h3>
+    <div class="overflow-x-auto mt-4">
+        <table class="w-full border-collapse border border-gray-300 dark:border-gray-700 text-sm">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="p-3">Student</th>
+                    <th class="p-3">Student ID</th>
+                    <th class="p-3">Submitted File</th>
+                    <th class="p-3">Submitted On</th>
+                    <th class="p-3">Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if not submissions %}
+                <tr>
+                    <td colspan="5" class="p-3 text-center text-gray-500">No submissions yet</td>
+                </tr>
+                {% else %}
+                {% for submission in submissions %}
+                <tr class="border-b border-gray-300 dark:border-gray-700">
+                    <td class="p-3 flex items-center space-x-2">
+                        <img src="/media/{{ submission.student.photo }}" alt="image" class="w-10 h-10 rounded-full object-cover border">
+                        <span>{{ submission.student.name }}</span>
+                    </td>
+                    <td class="p-3 text-center">{{ submission.student_id }}</td>
+                    <td class="p-3 text-center">
+                        <a href="{{ submission.file.url }}" download class="text-blue-500 hover:underline">Download</a>
+                    </td>
+                    <td class="p-3 text-center">{{ submission.submission_date }}</td>
+                    <td class="p-3 text-center">
+                        <form action="{% url 'gradeSubmission' course.code assignment.id submission.id %}" method="post" class="flex justify-center space-x-2">
+                            {% csrf_token %}
+                            <input type="number" name="marks" placeholder="Marks" class="px-2 py-1 border rounded text-center w-16" max="{{ assignment.marks }}" step=".1" min="0" required value="{{ submission.marks }}">
+                            <button type="submit" class="bg-black text-white px-3 py-1 rounded hover:bg-gray-700 transition">✔</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 </div>
-<!-- navigation links end -->
-<div class="container">
-   <div class="shadow rounded p-3 assignment-info">
-      <p class="px-2 fw-bold fs-5">{{assignment.title}}</p>
-      <div class="p-2 text-break">{% autoescape off %}{{assignment.description}}{% endautoescape %}</div>
-      <h6 class="p-2 fw-bold">Deadline: <span class="px-2" style="color:red"> {{assignment.due_date}} </span></h6>
-      {% if assignment.file %}
-      <label class="p-2 fw-bold" for="">Attachment: &nbsp <a
-         class="px-2 py-1 text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2"
-         style="text-decoration: none; font-size: smaller !important" href="{{assignment.file.url}}"> &nbsp View
-      </a> &nbsp or &nbsp <a
-         class="fs-6 px-2 py-1 text-primary bg-primary bg-opacity-10 border border-priamry border-opacity-10 rounded-2"
-         style="text-decoration: none; font-size: smaller !important" download href=" {{assignment.file.url}}">
-      Download</a></label><br>
-      {% endif %}
-      <label class="p-2 fw-bold" for="">
-      Submitted : {{assignment.submission_set.count}}/{{totalStudents}}
-      </label><br>
-      <label class="p-2 fw-bold" for="">Time Remaining : <span class="fw-semibold" id="timeRemain"></span></label>
-   </div>
-   <h6 class="text-muted fw-bold fst-italic mt-3">Showing all submissions:</h6>
-</div>
-<!--Student grading table-->
-<div class="container assignment-info">
-   <div class="table-responsive">
-      <table class="table shadow rounded" style="white-space: nowrap;">
-         <thead class="table-dark">
-            <tr>
-               <th class="text-center" scope="col" colspan="2">Student</th>
-               <th class="text-center" scope="col">Student ID</th>
-               <th class="text-center" scope="col">Submitted file</th>
-               <th class="text-center" scope="col">Submitted on</th>
-               <th class="text-center" scope="col" style="min-width: 150px;">Grade</th>
-            </tr>
-         </thead>
-         <tbody>
-            {% if not submissions %}
-            <td class="text-center text-muted fst-italic" colspan="6">No one has submitted yet</th>
-               {% else %}
-               {% for submission in submissions %}
-            <tr>
-               <td class="text-center"><img class="rounded-circle" src="/media/{{ submission.student.photo}}" alt="image"
-                  style="height: 2.5rem;"></td>
-               <td>{{submission.student.name}}</td>
-               <td class="text-center"><span>{{ submission.student_id }}</span></td>
-               <td class="text-center"><a
-                  class="fw-bold px-2 py-1 text-primary bg-primary bg-opacity-10 border border-priamry border-opacity-10 rounded-2"
-                  style="text-decoration: none; font-size: smaller !important" download
-                  href="{{submission.file.url}}">Download</a></td>
-               <td class="text-center">{{submission.submission_date}}</td>
-               {% if submission %}
-               <td class="text-center" style="min-width: 150px;">
-                  <form action="{% url 'gradeSubmission' course.code assignment.id submission.id %}"
-                     method="post">
-                     {% csrf_token %}
-                     <div class="d-flex justify-content-center">
-                        <div class="form-group">
-                           <input class="form-control text-center" type="number" placeholder="Marks" name="marks" id="marks"
-                              max="{{ assignment.marks}}" step=".1" min="0" value="{{submission.marks}}" required>
-                        </div>
-                        <button
-                           type="submit" class="btn btn-sm ms-2 rounded-2"><img
-                           src="{% static 'images/icon/check.png' %}" alt="set" style="height:1rem"></button>
-                     </div>
-               </td>
-               {% else %}
-               <td class="text-center" style="min-width: 150px;">
-               <form action="{% url 'gradeSubmission' course.code assignment.id submission.id %}"
-                  method="post">
-               {% csrf_token %}
-               <div class="d-flex justify-content-center">
-               <div class="form-group">
-               <input class="form-control text-center" type="number" placeholder="Marks" name="marks" id="marks"
-                  max="{{ assignment.marks}}" step=".1" min="0" required value="{{submission.marks}}"></div><button type="submit"
-                  class="btn btn-outline-primary btn-sm ms-2"><img
-                  src="{% static 'images/icon/check.png' %}" alt="set" style="height:1rem"></button>
-               </div>
-               </td>
-               {% endif %}
-               </form>
-            </tr>
-            {% endfor %}
-            {% endif %}
-         </tbody>
-      </table>
-   </div>
-</div>
+
 <script>
-   let assignment = document.querySelectorAll('.assignment-info');
-   anime({
-      targets: assignment,
-      opacity: [0, 1],
-      easing: 'easeInOutQuad',
-      duration: 1500,
-      delay: function (el, i) {
-         return i * 250;
-      }
-   });
-   
-   var time = new Date('{{ assignment.deadline|date:"D, d M Y H:i:s"}}').getTime();
-   var rand = setInterval(function () {
-       var now = new Date().getTime();
-       var difference = time - now;
-       var days = Math.floor(difference / (1000 * 60 * 60 * 24));
-       var hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-       var minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-       var seconds = Math.floor((difference % (1000 * 60)) / 1000);
-   
-       document.getElementById("timeRemain").innerHTML = days + " days " + hours + " hours " +
-           minutes + " minutes " + seconds + " seconds ";
-   
-       if (difference < 0) {
-           clearInterval(rand);
-           document.getElementById("timeRemain").innerHTML = "Closed!";
-           document.getElementById("timeRemain").style.color = "red";
-       }
-   }, 1000);
+    var time = new Date('{{ assignment.deadline|date:"D, d M Y H:i:s" }}').getTime();
+    var rand = setInterval(function () {
+        var now = new Date().getTime();
+        var difference = time - now;
+        var days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById("timeRemain").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+        if (difference < 0) {
+            clearInterval(rand);
+            document.getElementById("timeRemain").innerHTML = "Closed!";
+            document.getElementById("timeRemain").classList.add("text-red-500");
+        }
+    }, 1000);
 </script>
+
 {% endblock %}

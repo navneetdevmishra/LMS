@@ -1,11 +1,90 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@700&display=swap");
-
-* {
-  font-family: "Inter", sans-serif;
-  box-sizing: border-box;
+body,
+pre {
+  font-family: "RedditSans", "sans-serif";
 }
 
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.ttf")
+      format("truetype");
+  font-weight: 200;
+}
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.ttf")
+      format("truetype");
+  font-weight: 300;
+}
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.ttf")
+      format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Regular.ttf")
+      format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-SemiBold.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-SemiBold.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-SemiBold.ttf")
+      format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Bold.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Bold.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Bold.ttf")
+      format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Bold.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Bold.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Bold.ttf")
+      format("truetype");
+  font-weight: 800;
+}
+@font-face {
+  font-family: RedditSans;
+  src: url("https://static.pw.live/fonts/reddit/RedditSans-Bold.woff2")
+      format("woff2"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Bold.woff")
+      format("woff"),
+    url("https://static.pw.live/fonts/reddit/RedditSans-Bold.ttf")
+      format("truetype");
+  font-weight: 900;
+}
 body {
   margin: 0;
   padding: 0;

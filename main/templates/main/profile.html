@@ -1,67 +1,40 @@
 {% extends 'index.html' %}
 {% block title %}{{student.name}} | eLMS{% endblock title %}
-{% block profile %}
-{% url 'profile' student.student_id %}
-{% endblock %}
-{% block user %}
-{{student.name}}
-{% endblock user %}
-{% block courses %}
-{% url 'myCourses' %}
-{% endblock courses %}
-{% block allCourses %}
-{% url 'courses' %}
-{% endblock %}
-{% block departments %}
-{% url 'departments' %}
-{% endblock %}
+{% block profile %}{% url 'profile' student.student_id %}{% endblock %}
+{% block user %}{{student.name}}{% endblock user %}
+{% block courses %}{% url 'myCourses' %}{% endblock courses %}
+{% block allCourses %}{% url 'courses' %}{% endblock allCourses %}
+{% block departments %}{% url 'departments' %}{% endblock departments %}
 {% block content %}
+
 {% if messages %}
-{% for message in messages %}
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-   {{ message }}
-   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-<!--navigation links-->
-<div class="container shadow-sm">
-   <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-      <ol class="breadcrumb p-3">
-         <li class="breadcrumb-item active animate__animated animate__backInRight" aria-current="page">Profile</li>
-      </ol>
-   </nav>
-</div>
-<div class="container shadow">
-   <div class="row">
-      <div class="col-12">
-         <div class="fw-bold fs-5 my-3 text-muted d-flex justify-content-center">
-            <p>Student info</p>
-         </div>
-      </div>
-   </div>
-   <div class="d-flex flex-column align-items-center">
-      <div class="my-3">
-         <img src="/media/{{student.photo}}" alt="image" class="rounded-circle" style="height: 10rem ; width:10rem">
-      </div>
-      <div class="my-3">
-         <h5>Name : {{student.name}}</h5>
-         <h5>ID : <span class="mx-3 px-1"></span>{{student.student_id}}</h5>
-         <h5>Dept :<span class="mx-2"> {{student.department}}</h5>
-      </div>
-   </div>
-   <div class="d-flex justify-content-center">
-      <a href="{% url 'changePasswordPrompt'  %}" class="btn btn-sm btn-primary border my-2 mx-1">
-      Change Password
-      </a>
-      <a href="{% url 'changePhotoPrompt'  %}" class="btn btn-sm btn-primary border my-2 mx-1">
-      Change Profile Picture      
-      </a>
-   </div>
+<div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-md animate-fadeIn">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
 </div>
 <script>
-   setTimeout(function() {
-      $('.alert').alert('close');
-   }, 3000);
+    setTimeout(() => document.querySelector('.fixed').remove(), 3000);
 </script>
+{% endif %}
+
+<div class="flex flex-col items-center justify-center min-h-screen px-6 bg-gray-50 dark:bg-gray-900">
+   
+
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 text-center w-full max-w-sm border border-gray-200 dark:border-gray-700">
+        <div class="flex justify-center">
+            <img src="/media/{{student.photo}}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-gray-300 dark:border-gray-600 shadow-lg">
+        </div>
+        <div class="mt-4 text-gray-900 dark:text-white">
+            <h3 class="text-xl font-bold">{{student.name}}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Student ID: <span class="font-medium">{{student.student_id}}</span></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Department: <span class="font-medium">{{student.department}}</span></p>
+        </div>
+        <div class="mt-6 flex flex-col space-y-3">
+            <a href="{% url 'changePasswordPrompt' %}" class="bg-black text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition shadow">Change Password</a>
+            <a href="{% url 'changePhotoPrompt' %}" class="bg-black text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition shadow">Change Profile Picture</a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
